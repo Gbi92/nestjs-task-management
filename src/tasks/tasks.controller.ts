@@ -11,12 +11,8 @@ export class TasksController {
     constructor(private tasksService: TasksService) {}
 
     // @Get()
-    // getTasks(@Query() filterDto: GetTasksFilterDto): Task[] {
-    //     if (Object.keys(filterDto).length) {
-    //         return this.tasksService.getTasksWithFilter(filterDto);
-    //     } else {
-    //         return this.tasksService.getAllTasks();
-    //     }
+    // getTasks(@Query() filterDto: GetTasksFilterDto): Promise<Task[]> {
+    //     return this.tasksService.getTasks(filterDto);
     // }
 
     @Get('/:id')
@@ -34,12 +30,12 @@ export class TasksController {
         return this.tasksService.deleteTaskById(id);
     }
 
-    // @Patch('/:id/status')
-    // updateTaskStatus(
-    //     @Param('id') id: string, 
-    //     @Body() updateTaskStatusDto: UpdateTaksStatusDto
-    // ): Task {
-    //     const { status } = updateTaskStatusDto;
-    //     return this.tasksService.updateTaskStatus(id, status);
-    // }
+    @Patch('/:id/status')
+    updateTaskStatus(
+        @Param('id') id: string, 
+        @Body() updateTaskStatusDto: UpdateTaksStatusDto
+    ): Promise<Task> {
+        const { status } = updateTaskStatusDto;
+        return this.tasksService.updateTaskStatus(id, status);
+    }
 }

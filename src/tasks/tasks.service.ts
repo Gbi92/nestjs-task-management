@@ -12,30 +12,9 @@ export class TasksService {
         @InjectRepository(Task)
         private readonly tasksRepository: Repository<Task>,
         ) {}
-    // getAllTasks(): Task[] {
-    //     return this.tasks;
-    // }
-
-    // getTasksWithFilter(filterDto: GetTasksFilterDto): Task[] {
-    //     const { status, search } = filterDto;
-
-    //     let tasks = this.getAllTasks();
-
-    //     if (status) {
-    //         tasks = tasks.filter((task) => task.status === status);
-    //     }
-
-    //     if (search) {
-    //         tasks = tasks. filter((task) => {
-    //             if (task.title.includes(search) || task.description.includes(search)) {
-    //                 return true;
-    //             }
-
-    //             return false;
-    //         });
-    //     }
-
-    //     return tasks;
+    
+    // getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
+    //     //
     // }
 
     async getTaskById(id: string): Promise<Task> {
@@ -70,7 +49,7 @@ export class TasksService {
         // const deleted = await this.tasksRepository.remove(toDelete);
 
         // --------------------
-        
+
         // Solution with 'delete':
         const result = await this.tasksRepository.delete(id);
 
@@ -79,9 +58,12 @@ export class TasksService {
         }
     }
 
-    // updateTaskStatus(id: string, status: TaskStatus): Task {
-    //     const task = this.getTaskById(id);
-    //     task.status = status;
-    //     return task;
-    // }
+    async updateTaskStatus(id: string, status: TaskStatus): Promise<Task> {
+        const task = await this.getTaskById(id);
+
+        task.status = status;
+        await this.tasksRepository.save(task);
+
+        return task;
+    }
 }
