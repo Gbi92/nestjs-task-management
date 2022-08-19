@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import { User } from "src/auth/user.entity";
 import { DataSource } from "typeorm";
+import { AuthCredentialsDto } from "./dto/auth-credentials.dto";
 import { CreateTaskDto } from "./dto/create-task.dto";
 import { GetTasksFilterDto } from "./dto/get-tasks-filter.dto";
 import { TaskStatus } from "./task-status.enum";
@@ -41,6 +43,16 @@ export class Repositories {
 
         await this.save(task);
         return task;
+      }
+    });
+  }
+
+  get usersRepository() {
+    return this.dataSource.getRepository(User).extend({
+      async createUser(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+        const { username, password } = authCredentialsDto;
+        const user = this.create({ username, password });
+        await this.save(user);
       }
     });
   }

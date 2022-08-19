@@ -3,7 +3,7 @@ import { TaskStatus } from './task-status.enum';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { Task } from './task.entity';
-import { Repositories } from './tasks.repository';
+import { Repositories } from './repositories';
 
 @Injectable()
 export class TasksService {
