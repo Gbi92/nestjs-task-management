@@ -2,23 +2,19 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { TaskStatus } from './task-status.enum';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
-import { Repository } from 'typeorm';
+import { Repositories } from './tasks.repository';
 
 @Injectable()
 export class TasksService {
-    constructor(
-        @InjectRepository(Task)
-        private readonly tasksRepository: Repository<Task>,
-        ) {}
+    constructor(private readonly repositories: Repositories,) {}
     
-    // getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
-    //     //
-    // }
+    getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
+        return this.repositories.tasksRepository.getTasks(filterDto);
+    }
 
     async getTaskById(id: string): Promise<Task> {
-        const found = await this.tasksRepository.findOne({where: {id: id}});
+        const found = await this.repositories.tasksRepository.findOne({where: {id: id}});
 
         if (!found) {
             throw new NotFoundException(`Task with ID ${id} not found`);
@@ -28,16 +24,7 @@ export class TasksService {
     }
 
     async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-        const { title, description } = createTaskDto;
-
-        const task = this.tasksRepository.create({
-            title,
-            description,
-            status: TaskStatus.OPEN,
-        });
-
-        await this.tasksRepository.save(task);
-        return task;
+        return this.repositories.tasksRepository.createTask(createTaskDto);
     }
 
     async deleteTaskById(id: string): Promise<void> {
@@ -51,7 +38,7 @@ export class TasksService {
         // --------------------
 
         // Solution with 'delete':
-        const result = await this.tasksRepository.delete(id);
+        const result = await this.repositories.tasksRepository.delete(id);
 
         if (result.affected === 0) {
             throw new NotFoundException(`Task with ID ${id} not found`);
@@ -62,7 +49,7 @@ export class TasksService {
         const task = await this.getTaskById(id);
 
         task.status = status;
-        await this.tasksRepository.save(task);
+        await this.repositories.tasksRepository.save(task);
 
         return task;
     }
