@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { User } from "src/auth/user.entity";
 import { DataSource } from "typeorm";
 import { AuthCredentialsDto } from "./dto/auth-credentials.dto";
@@ -6,6 +6,7 @@ import { CreateTaskDto } from "./dto/create-task.dto";
 import { GetTasksFilterDto } from "./dto/get-tasks-filter.dto";
 import { TaskStatus } from "./task-status.enum";
 import { Task } from "./task.entity";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class Repositories {
@@ -51,8 +52,23 @@ export class Repositories {
     return this.dataSource.getRepository(User).extend({
       async createUser(authCredentialsDto: AuthCredentialsDto): Promise<void> {
         const { username, password } = authCredentialsDto;
-        const user = this.create({ username, password });
-        await this.save(user);
+
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const user = this.create({ username, password: hashedPassword });
+
+        try {
+          await this.save(user);
+        } catch (error) {
+          if (error.code === '23505') {
+            // duplicate username
+            throw new ConflictException('Username already exists');
+          } else {
+            throw new InternalServerErrorException();
+          }
+        }
+
       }
     });
   }
