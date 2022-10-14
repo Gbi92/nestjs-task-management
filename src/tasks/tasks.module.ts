@@ -4,7 +4,7 @@ import { Task } from './task.entity';
 import { TasksController } from './tasks.controller';
 import { Repositories } from './repositories';
 import { TasksService } from './tasks.service';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [

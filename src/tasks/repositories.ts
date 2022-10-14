@@ -1,5 +1,5 @@
 import { ConflictException, Injectable, InternalServerErrorException } from "@nestjs/common";
-import { User } from "src/auth/user.entity";
+import { User } from "../auth/user.entity";
 import { DataSource } from "typeorm";
 import { AuthCredentialsDto } from "./dto/auth-credentials.dto";
 import { CreateTaskDto } from "./dto/create-task.dto";

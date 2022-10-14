@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthCredentialsDto } from 'src/tasks/dto/auth-credentials.dto';
-import { Repositories } from 'src/tasks/repositories';
+import { AuthCredentialsDto } from '../tasks/dto/auth-credentials.dto';
+import { Repositories } from '../tasks/repositories';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
